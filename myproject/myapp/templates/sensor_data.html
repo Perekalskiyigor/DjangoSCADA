@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Sensor Data</h2>
+<table>
+  <tr>
+    <th>Sensor 1</th>
+    <th>Sensor 2</th>
+    <th>Sensor 3</th>
+    <th>Sensor 4</th>
+  </tr>
+  {% for item in data %}
+  <tr>
+    <td>{{ item.sensor1 }}</td>
+    <td>{{ item.sensor2 }}</td>
+    <td>{{ item.sensor3 }}</td>
+    <td>{{ item.sensor4 }}</td>
