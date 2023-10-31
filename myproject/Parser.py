@@ -11,8 +11,8 @@ try:
        conn = pyodbc.connect('Driver={SQL Server};'
                             'Server=10.11.21.24;'
                             'Database=BI_TEST;'
-                            'UID=Perekalskiy_igor;'
-                            'PWD=Fnkfynblf198714;')
+                            'UID=ESP8266;'
+                            'PWD=29V$r4lr;')
 except pyodbc.Error as ex:
        print("Ошибка подключения к базе данных: ", ex)
 print('Подключение к базе данных успешно')
