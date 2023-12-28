@@ -20,6 +20,7 @@ print('Подключение к базе данных успешно')
 # Создание курсора для выполнения SQL-запросов
 cursor = conn.cursor()
 # Запрос к базе данных для получения всех IP-адресов из таблицы ESP_IP
+
 cursor.execute("SELECT id, ip_address, Description FROM ESP_IP")
 print ('Запрос на получение IP адресов: успешно')
 

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -55,7 +56,7 @@ ROOT_URLCONF = 'myproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,10 +86,10 @@ DATABASES = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'sql_server.pyodbc',
+        'ENGINE': 'mssql',
         'NAME': 'BI_TEST',
-        'USER': 'Perekalskiy_igor',
-        'PASSWORD': 'Fnkfynblf198714',
+        'USER': 'ESP8266',
+        'PASSWORD': '29V$r4lr',
         'HOST': 'extdb.uralmash.ru',
         'PORT': '1433',
         'OPTIONS': {

@@ -1,6 +1,20 @@
-from django.shortcuts import render
-from .models import SensorData
+# ice_cream/views.py
+from django.http import HttpResponse
 
-def sensor_data(request):
-    data = SensorData.objects.all()
-    return render(request, 'sensor_data.html', {'data': data})
+
+# Главная страница
+def index(request):    
+    return HttpResponse('Главная страница')
+
+
+'''
+# Страница со списком мороженого
+def icecream_list(request):
+    return HttpResponse('Список мороженого')
+
+
+# Страница с информацией об одном сорте мороженого;
+# view-функция принимает параметр pk из path()
+def icecream_detail(request, pk):
+    return HttpResponse(f'Мороженое номер {pk}')
+'''
