@@ -1,0 +1,90 @@
+import time
+import schedule
+import pyodbc
+import pandas as pd
+import os
+import glob
+from datetime import datetime
+import shutil
+from ftfy import fix_encoding
+import chardet
+from tkinter import *
+# Подключение к бд
+conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=digger;DATABASE=BI_DIGGER;UID=sa;PWD=FgzKRHaX9zEEFQpgoJ48TBvrJ')
+
+
+
+# Функция записи в бд полученных данных
+def recievedFilecsv():
+    #folder_path = r'C:\Users\I.Perekalskiy\Sync\\'
+    folder_path = r'C:\Users\I.Perekalskiy\YandexDisk-UZTMPerekalskiy\\'
+    csv_files = glob.glob(os.path.join(folder_path, "*.csv"))
+    for file in csv_files:
+        with open(file, 'rb') as f:
+            result = chardet.detect(f.read())
+        data = pd.read_csv(file, encoding=result['encoding'])
+        MSQLConnect(data)
+        print(f"Файл отправлен {file}")
+        new_filename = os.path.splitext(file)[0] + '_end' + os.path.splitext(file)[1]
+        os.rename(file, new_filename)
+        # Перемещение файла
+        src = new_filename
+        #dest = r'C:\Users\I.Perekalskiy\Sync\ProcessedFiles'
+        dest = r'C:\Users\I.Perekalskiy\YandexDisk-UZTMPerekalskiy\ProcessedFiles\\'
+        shutil.move(src, dest)
+        print(f"Файл {file} перемещен")
+    conn.close()
+
+        
+# соединение и комит
+def MSQLConnect(data):
+    i=0
+    try:
+        cursor = conn.cursor()
+        for _, row in data.iterrows(): 
+            fixed_description = fix_encoding(row['Description'])
+            #print (fixed_description) 
+            #print(row['TagNum'])
+            #print(row['Name'])
+            #print(row['Description'])
+            #params = (f"'{row['FixTime']}'", f"'{row['idDataBlock']}'", f"'{row['TagNum']}'", f"'{row['Name']}'", f"'{row['Value']}'", f"'ncn'")
+            #print(params) # Print the parameters before executing the procedure
+            
+           
+            
+            # Выполните SQL запрос
+            postgreSQL_select_Query = f"""
+                EXEC [dbo].[PLC_RefillmillParametrst]
+                '{row['FixTime']}',
+                '{row['idDataBlock']}',
+                '{row['TagNum']}',
+                '{row['Value']}',
+                '{row['Name']}',
+                '{fixed_description}'
+            """
+            #print (postgreSQL_select_Query)
+            
+            
+            cursor.execute(postgreSQL_select_Query)
+            conn.commit()
+            i=i+1
+            print(f"Write {i} запись")
+            
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")  
+        
+
+# Джоб который дергает функции записи в бд        
+def job():
+    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"{current_date} Активация по расписанию")
+    recievedFilecsv()
+    
+
+#Выпорлнять каждые 10 минут
+schedule.every(1).minutes.do(job)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
+
